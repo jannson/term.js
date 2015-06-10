@@ -304,7 +304,7 @@ Terminal.tangoColors = [
 
 Terminal.xtermColors = [
   // dark:
-  '#000000', // black
+  '#475A5F', // black
   '#cd0000', // red3
   '#00cd00', // green3
   '#cdcd00', // yellow3
@@ -356,7 +356,7 @@ Terminal.colors = (function() {
 })();
 
 // Default BG/FG
-Terminal.colors[256] = '#000000';
+Terminal.colors[256] = '#475A5F';
 Terminal.colors[257] = '#f0f0f0';
 
 Terminal._colors = Terminal.colors.slice();
@@ -475,7 +475,8 @@ Terminal.prototype.initGlobal = function() {
   }
 
   if (this.useStyle) {
-    Terminal.insertStyle(document, this.colors[256], this.colors[257]);
+    //Terminal.insertStyle(document, this.colors[256], this.colors[257]);
+    Terminal.insertStyle(document, "#475A5F", this.colors[257]);
   }
 };
 
@@ -717,8 +718,9 @@ Terminal.prototype.open = function(parent) {
   this.element.style.outline = 'none';
   this.element.setAttribute('tabindex', 0);
   this.element.setAttribute('spellcheck', 'false');
-  this.element.style.backgroundColor = this.colors[256];
-  this.element.style.color = this.colors[257];
+  //change by jannson, fixme
+  //this.element.style.backgroundColor = this.colors[256];
+  //this.element.style.color = this.colors[257];
 
   // Create the lines for our terminal.
   this.children = [];

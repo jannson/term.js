@@ -1,6 +1,5 @@
-
 <!doctype html>
-<title>term.js</title>
+<title>webshell</title>
 <!--
   term.js
   Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
@@ -15,23 +14,27 @@
     font: 20px/1.5 sans-serif;
   }
 
-/*
   .terminal {
     float: left;
-    border: #000 solid 5px;
+    border: #475A5F solid 5px;
     font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
     font-size: 11px;
     color: #f0f0f0;
-    background: #000;
+    background: #475A5F;
   }
 
   .terminal-cursor {
     color: #000;
     background: #f0f0f0;
   }
-*/
 </style>
-<h1>term.js</h1>
+<h1>webshell</h1>
+<div id="webshell">
+</div>
+<div>
+<textarea cols="60" rows="5" wrap="off" id="textToSend" style="width:99%; font-family:'Courier New', Courier, mono; font-size:11px;background:#475A5F;color:#FFFFFF;"></textarea>
+<input type="button" id="send" onclick='sendBlock();' value="send"/>
+</div>
 <script src="include/base64.js"></script>
 <script src="include/util.js"></script>
 <script src="include/websock.js"></script>
@@ -39,11 +42,11 @@
 <script src="include/keysym.js"></script> 
 <script src="term.js"></script>
 <script>
+
+var ws, term, sQ = [];
+
 ;(function() {
   window.onload = function() {
-
-    var term, term, sQ = [];
-
     ws = new Websock();
     ws.on('open', function(e) {
       term = new Terminal({
@@ -66,9 +69,9 @@
         document.title = title;
       });
 
-      term.open(document.body);
+      term.open(document.getElementById("webshell"));
 
-      term.write('\x1b[31mWelcome to term.js!\x1b[m\r\n');
+      //term.write('\x1b[31mWelcome to term.js!\x1b[m\r\n');
     });
 
     ws.on('close', function(e) {
@@ -83,9 +86,21 @@
         term.write(arr);
     });
 
-    uri = "ws://10.1.1.98:8008/10-1-1-1-23";
+    uri = "ws://192.168.1.117:8008/192-168-1-1-23";
     ws.open(uri, "binary");
 
   };
+
 }).call(this);
+
+  function sendBlock() {
+	  var tv = document.getElementById("textToSend");
+	  var data = tv.value + "\n";
+          var tosend = [];
+          for(var i = 0; i < data.length; i++) {
+            tosend.push(data.charCodeAt(i));
+          }
+          ws.send(tosend);
+	  tv.value = "";
+  }
 </script>

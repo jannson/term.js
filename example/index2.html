@@ -1,3 +1,4 @@
+
 <!doctype html>
 <title>term.js</title>
 <!--
@@ -31,14 +32,21 @@
 */
 </style>
 <h1>term.js</h1>
-<script src="/socket.io/socket.io.js"></script>
+<script src="include/base64.js"></script>
+<script src="include/util.js"></script>
+<script src="include/websock.js"></script>
+<script src="include/webutil.js"></script> 
+<script src="include/keysym.js"></script> 
 <script src="term.js"></script>
 <script>
 ;(function() {
   window.onload = function() {
-    var socket = io.connect();
-    socket.on('connect', function() {
-      var term = new Terminal({
+
+    var term, term, sQ = [];
+
+    ws = new Websock();
+    ws.on('open', function(e) {
+      term = new Terminal({
         cols: 120,
         rows: 50,
         useStyle: true,
@@ -47,7 +55,11 @@
       });
 
       term.on('data', function(data) {
-        socket.emit('data', data);
+          var tosend = [];
+          for(var i = 0; i < data.length; i++) {
+            tosend.push(data.charCodeAt(i));
+          }
+          ws.send(tosend);
       });
 
       term.on('title', function(title) {
@@ -57,15 +69,23 @@
       term.open(document.body);
 
       term.write('\x1b[31mWelcome to term.js!\x1b[m\r\n');
-
-      socket.on('data', function(data) {
-        term.write(data);
-      });
-
-      socket.on('disconnect', function() {
-        term.destroy();
-      });
     });
+
+    ws.on('close', function(e) {
+        term.destroy();
+    });
+    ws.on('error', function(e) {
+        term.destroy();
+    });
+
+    ws.on('message', function(e) {
+        var arr = ws.rQshiftStr();
+        term.write(arr);
+    });
+
+    uri = "ws://10.1.1.98:8008/10-1-1-1-23";
+    ws.open(uri, "binary");
+
   };
 }).call(this);
 </script>

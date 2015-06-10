@@ -89,14 +89,14 @@ app.use(terminal.middleware());
 if (!~process.argv.indexOf('-n')) {
   server.on('connection', function(socket) {
     var address = socket.remoteAddress;
-    if (address !== '127.0.0.1' && address !== '::1') {
+    /*if (address !== '127.0.0.1' && address !== '::1') {
       try {
         socket.destroy();
       } catch (e) {
         ;
       }
       console.log('Attempted connection from %s. Refused.', address);
-    }
+    } */
   });
 }
 
